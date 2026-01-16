@@ -18,10 +18,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Kebabify.slnx
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish Kebabify.Api/Kebabify.Api.csproj -c Release -o website
+      run: dotnet publish Kebabify.Api/Kebabify.Api.csproj -c Release -o api
