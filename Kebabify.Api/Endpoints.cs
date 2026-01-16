@@ -36,7 +36,7 @@ namespace Kebabify.Api
                 const long MaxBodySize = 1024;
                 if (req.Body.Length > MaxBodySize)
                 {
-                    return new BadRequestObjectResult("Request body too large.");
+                    return new BadRequestObjectResult("Request body too large");
                 }
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -45,7 +45,7 @@ namespace Kebabify.Api
 
                 if (data == null || string.IsNullOrWhiteSpace(data.Input))
                 {
-                    return new BadRequestObjectResult("Invalid JSON or empty input.");
+                    return new BadRequestObjectResult("Invalid JSON or empty input");
                 }
 
                 var validationResults = new List<ValidationResult>();
