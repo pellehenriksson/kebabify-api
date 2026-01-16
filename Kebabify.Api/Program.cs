@@ -1,3 +1,5 @@
+using Azure.Identity;
+
 using Kebabify.Api.Services;
 
 using Microsoft.Azure.Functions.Worker;
@@ -19,7 +21,17 @@ namespace Kebabify.Api
             // Register BlobServiceClient using DI
             builder.Services.AddAzureClients(clientBuilder =>
             {
-                clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("Storage"));
+                if (builder.Environment.IsDevelopment())
+                {
+                    // LOCAL: Uses "Storage__ConnectionString" from local.settings.json
+                    clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("Storage"));
+                }
+                else
+                {
+                    // PRODUCTION: Uses "Storage__serviceUri" and Managed Identity
+                    clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("Storage"));
+                    clientBuilder.UseCredential(new DefaultAzureCredential());
+                }
             });
 
             builder.Services

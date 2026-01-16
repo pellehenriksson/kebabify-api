@@ -22,11 +22,11 @@ namespace Kebabify.Api
             {
                 logger.LogInformation("Processing kebab request");
 
-                const long MaxBodySize = 1024;
-                if (req.Body.Length > MaxBodySize)
-                {
-                    return new BadRequestObjectResult("Request body over the limit");
-                }
+                //const long MaxBodySize = 1024;
+                //if (req.Body.Length > MaxBodySize)
+                //{
+                //    return new BadRequestObjectResult("Request body over the limit");
+                //}
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
