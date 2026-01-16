@@ -65,7 +65,7 @@ namespace Kebabify.Test
         }
 
         [Fact]
-        public async Task MakeKebab_Empty_Body_Should_Return_Error()
+        public async Task MakeKebab_Empty_Body_Should_Return_Bad_Request()
         {
             // arrange
             var sut = Testable.Create();
@@ -130,6 +130,28 @@ namespace Kebabify.Test
             var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
             var errors = badResult.Value.ShouldBeAssignableTo<IEnumerable<string>>();
             errors.ShouldContain("The field Input must be a string with a minimum length of 2 and a maximum length of 512.");
+        }
+
+        [Fact]
+        public async Task MakeKebab_Exception_Was_Thrown_Should_Return_Error()
+        {
+            // arrange
+            var input = "x y";
+
+            var sut = Testable.Create();
+
+            var request = new KebabRequest { Input = input };
+
+            sut.KebabService
+                .Setup(x => x.Create(request.Input))
+                .Throws(new Exception("something went wrong, sorry"));
+
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
+
+            // assert
+            var errorResult = result.ShouldBeOfType<StatusCodeResult>();
+            errorResult.StatusCode.ShouldBe(500);
         }
 
         public class Testable(Mock<IKebabService> kebabService, Mock<IStorageService> storageService, ILogger<Endpoints> logger)
