@@ -29,7 +29,7 @@ namespace Kebabify.Api
                 }
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-             
+
                 var data = JsonSerializer.Deserialize<KebabRequest>(requestBody, options);
 
                 if (data == null || string.IsNullOrWhiteSpace(data.Input))
