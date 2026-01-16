@@ -1,9 +1,12 @@
 # kebabify-api
 simple-api-for-kebabifying-strings
 
-- use an azure function as the api
-- write created string to storage account
-- use managed identity bewteen services
+## architecture
+
+- uses an azure function as the api
+- write created 'kebabs' to a storage account
+- use managed identity between services
 - build and deploy with github
-- make unit tests
 - use open api / swagger
+
+## usage

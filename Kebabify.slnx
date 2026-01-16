@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="../.gitignore" />
-    <File Path="../README.md" />
     <File Path=".editorconfig" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="Kebabify.Api/Kebabify.Api.csproj" />
   <Project Path="Kebabify.Test/Kebabify.Test.csproj" />
