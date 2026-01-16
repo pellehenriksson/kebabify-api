@@ -2,5 +2,6 @@
 {
     public interface IStorageService
     {
+        Task Persist(string input, string result);
     }
 }
