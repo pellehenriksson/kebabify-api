@@ -7,40 +7,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Kebabify.Api.Services
 {
-    public class StorageService : IStorageService
+    public class StorageService(BlobServiceClient blobServiceClient, ILogger<StorageService> logger) : IStorageService
     {
-        private readonly BlobServiceClient blobServiceClient;
-
-        private readonly ILogger<StorageService> logger;
-
-        public StorageService(BlobServiceClient blobServiceClient, ILogger<StorageService> logger)
-        {
-            this.blobServiceClient = blobServiceClient;
-            this.logger = logger;
-        }
+        private const string Container = "kebabify";
 
         public async Task Persist(string input, string result)
         {
-            try
+            logger.LogInformation("Create blobcontainerClient for: '{Container}'", Container);
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(Container);
+            await containerClient.CreateIfNotExistsAsync();
+
+            logger.LogInformation("Create blobClient");
+            var blobClient = containerClient.GetBlobClient(GenereateFilename());
+
+            var options = new BlobUploadOptions
             {
-                var containerClient = this.blobServiceClient.GetBlobContainerClient("kebabify");
-                await containerClient.CreateIfNotExistsAsync();
+                HttpHeaders = new BlobHttpHeaders { ContentType = "application/json" }
+            };
 
-                var blobClient = containerClient.GetBlobClient(GenereateFilename());
+            var item = new Item(input, result);
 
-                var options = new BlobUploadOptions
-                {
-                    HttpHeaders = new BlobHttpHeaders { ContentType = "application/json" }
-                };
-
-                var item = new Item(input, result);
-
-                await blobClient.UploadAsync(BinaryData.FromString(item.ToJson()), options: options);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            logger.LogInformation("Persist file to storage");
+            await blobClient.UploadAsync(BinaryData.FromString(item.ToJson()), options: options);
         }
 
         private static string GenereateFilename()
@@ -49,6 +38,5 @@ namespace Kebabify.Api.Services
         }
 
         private sealed record Item(string Input, string Result);
-
     }
 }

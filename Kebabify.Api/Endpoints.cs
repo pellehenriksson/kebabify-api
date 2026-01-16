@@ -11,36 +11,25 @@ using System.Text.Json;
 
 namespace Kebabify.Api
 {
-    public class Endpoints
+    public class Endpoints(IKebabService kebabService, IStorageService storageService, ILogger<Endpoints> logger)
     {
-        private readonly IKebabService kebabService;
-
-        private readonly IStorageService storageService;
-
-        private readonly ILogger<Endpoints> logger;
-
-        public Endpoints(IKebabService kebabService, IStorageService storageService, ILogger<Endpoints> logger)
-        {
-            this.kebabService = kebabService;
-            this.storageService = storageService;
-            this.logger = logger;
-        }
+        private static readonly JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
 
         [Function("MakeKebab")]
         public async Task<IActionResult> MakeKebab([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "kebab")] HttpRequestData req)
         {
             try
             {
-                this.logger.LogInformation("Processing kebab request");
+                logger.LogInformation("Processing kebab request");
 
                 const long MaxBodySize = 1024;
                 if (req.Body.Length > MaxBodySize)
                 {
-                    return new BadRequestObjectResult("Request body too large");
+                    return new BadRequestObjectResult("Request body over the limit");
                 }
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+             
                 var data = JsonSerializer.Deserialize<KebabRequest>(requestBody, options);
 
                 if (data == null || string.IsNullOrWhiteSpace(data.Input))
@@ -55,18 +44,19 @@ namespace Kebabify.Api
                     return new BadRequestObjectResult(validationResults.Select(r => r.ErrorMessage));
                 }
 
-                this.logger.LogInformation("Making the kebab");
-                var result = this.kebabService.Create(data.Input);
+                logger.LogInformation("Making the kebab");
+                var result = kebabService.Create(data.Input);
 
-                this.logger.LogInformation("Peristing result");
-                await this.storageService.Persist(data.Input, result);
+                logger.LogInformation("Peristing result");
+                await storageService.Persist(data.Input, result);
 
-                this.logger.LogInformation("Returning result");
+                logger.LogInformation("Returning result");
                 return new OkObjectResult(new KebabRespone(data.Input, result));
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Failed to make kebab");
+                logger.LogError(ex, "Failed to make kebab");
+
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

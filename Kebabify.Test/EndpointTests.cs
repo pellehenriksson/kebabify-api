@@ -2,17 +2,12 @@
 using Kebabify.Api.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 using Moq;
 
 using Shouldly;
-
-using System.Text;
-using System.Text.Json;
 
 namespace Kebabify.Test
 {
@@ -38,7 +33,7 @@ namespace Kebabify.Test
                 .Returns(Task.CompletedTask);
 
             // act
-            var result = await sut.MakeKebab(CreateMockRequest(request).Object);
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
 
             // assert
             var okResult = result.ShouldBeOfType<OkObjectResult>();
@@ -51,17 +46,90 @@ namespace Kebabify.Test
             sut.StorageService.Verify(s => s.Persist(input, expected), Times.Once);
         }
 
-        private Mock<HttpRequestData> CreateMockRequest(KebabRequest request)
+        [Fact]
+        public async Task MakeKebab_Body_Size_Over_The_Limit_Should_Return_Bad_Request()
         {
-            var json = JsonSerializer.Serialize(request);
-            var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            // arrange
+            var input = new String('x', 1024);
 
-            var mockContext = new Mock<FunctionContext>();
+            var sut = Testable.Create();
 
-            var mockRequest = new Mock<HttpRequestData>(mockContext.Object);
-            mockRequest.Setup(x => x.Body).Returns(bodyStream);
+            var request = new KebabRequest { Input = input };
 
-            return mockRequest;
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
+
+            // assert
+            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
+            badResult.Value.ShouldBe("Request body over the limit");
+        }
+
+        [Fact]
+        public async Task MakeKebab_Empty_Body_Should_Return_Error()
+        {
+            // arrange
+            var sut = Testable.Create();
+
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest<string?>(null).Object);
+
+            // assert
+            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
+            badResult.Value.ShouldBe("Invalid JSON or empty input");
+        }
+
+        [Fact]
+        public async Task MakeKebab_No_Input_Should_Return_Bad_Request()
+        {
+            // arrange
+            var sut = Testable.Create();
+
+            var request = new KebabRequest { Input = string.Empty };
+
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
+
+            // assert
+            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
+            badResult.Value.ShouldBe("Invalid JSON or empty input");
+        }
+
+        [Fact]
+        public async Task MakeKebab_Input_Is_Over_The_Limit_Should_Return_Bad_Request()
+        {
+            // arrange
+            var input = new String('x', 513);
+
+            var sut = Testable.Create();
+
+            var request = new KebabRequest { Input = input };
+
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
+
+            // assert
+            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
+            var errors = badResult.Value.ShouldBeAssignableTo<IEnumerable<string>>();
+            errors.ShouldContain("The field Input must be a string with a minimum length of 2 and a maximum length of 512.");
+        }
+
+        [Fact]
+        public async Task MakeKebab_Input_Is_Under_The_Limit_Should_Return_Bad_Request()
+        {
+            // arrange
+            var input = "x";
+
+            var sut = Testable.Create();
+
+            var request = new KebabRequest { Input = input };
+
+            // act
+            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
+
+            // assert
+            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
+            var errors = badResult.Value.ShouldBeAssignableTo<IEnumerable<string>>();
+            errors.ShouldContain("The field Input must be a string with a minimum length of 2 and a maximum length of 512.");
         }
 
         public class Testable(Mock<IKebabService> kebabService, Mock<IStorageService> storageService, ILogger<Endpoints> logger)
