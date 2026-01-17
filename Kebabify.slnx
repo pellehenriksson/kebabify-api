@@ -1,7 +1,6 @@
 <Solution>
-  <Folder Name="/Solution Items/">
+  <Folder Name="/,misc/">
     <File Path=".editorconfig" />
-    <File Path=".github/workflows/build.yml" />
     <File Path=".gitignore" />
     <File Path="CLAUDE.md" />
     <File Path="LICENSE" />
