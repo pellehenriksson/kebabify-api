@@ -46,24 +46,6 @@ namespace Kebabify.Test
             sut.StorageService.Verify(s => s.Persist(input, expected), Times.Once);
         }
 
-        [Fact (Skip = "Need to fix the validation first")]
-        public async Task MakeKebab_Body_Size_Over_The_Limit_Should_Return_Bad_Request()
-        {
-            // arrange
-            var input = new String('x', 1024);
-
-            var sut = Testable.Create();
-
-            var request = new KebabRequest { Input = input };
-
-            // act
-            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
-
-            // assert
-            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
-            badResult.Value.ShouldBe("Request body over the limit");
-        }
-
         [Fact]
         public async Task MakeKebab_Empty_Body_Should_Return_Bad_Request()
         {
@@ -94,7 +76,7 @@ namespace Kebabify.Test
             badResult.Value.ShouldBe("Invalid JSON or empty input");
         }
 
-        [Fact(Skip = "todo")]
+        [Fact]
         public async Task MakeKebab_Input_Is_Over_The_Limit_Should_Return_Bad_Request()
         {
             // arrange

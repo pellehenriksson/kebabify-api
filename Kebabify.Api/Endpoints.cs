@@ -22,19 +22,6 @@ namespace Kebabify.Api
             {
                 logger.LogInformation("Processing kebab request");
 
-                //const long MaxBodySize = 512;
-
-                //if (req.Headers.TryGetValues("Content-Length", out var contentLength))
-                //{
-                //    if (contentLength.Any() && long.TryParse(contentLength.First(), out var length))
-                //    {
-                //        if (length > MaxBodySize)
-                //        {
-                //            return new BadRequestObjectResult("Request body over the limit");
-                //        }
-                //    }
-                //}
-
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
                 var data = JsonSerializer.Deserialize<KebabRequest>(requestBody, options);
