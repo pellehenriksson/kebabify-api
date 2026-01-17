@@ -6,7 +6,10 @@
       "Bash(dotnet build:*)",
       "Bash(dotnet test:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dotnet publish:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)"
     ]
   }
 }
