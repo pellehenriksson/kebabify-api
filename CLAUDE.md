@@ -97,7 +97,6 @@ GitHub Actions workflow (`.github/workflows/build.yml`) runs on push/PR to main:
 
 ## Git Workflow Conventions
 
-<<<<<<< HEAD
 **CRITICAL: Claude MUST follow these git practices for ALL work in this repository.**
 
 ### Branch-Based Workflow
