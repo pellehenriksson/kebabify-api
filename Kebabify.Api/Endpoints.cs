@@ -22,10 +22,17 @@ namespace Kebabify.Api
             {
                 logger.LogInformation("Processing kebab request");
 
-                //const long MaxBodySize = 1024;
-                //if (req.Body.Length > MaxBodySize)
+                //const long MaxBodySize = 512;
+
+                //if (req.Headers.TryGetValues("Content-Length", out var contentLength))
                 //{
-                //    return new BadRequestObjectResult("Request body over the limit");
+                //    if (contentLength.Any() && long.TryParse(contentLength.First(), out var length))
+                //    {
+                //        if (length > MaxBodySize)
+                //        {
+                //            return new BadRequestObjectResult("Request body over the limit");
+                //        }
+                //    }
                 //}
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
