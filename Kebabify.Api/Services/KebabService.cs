@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Kebabify.Api.Services
 {
-    public class KebabService(ILogger<KebabService> logger) : IKebabService
+    public partial class KebabService(ILogger<KebabService> logger) : IKebabService
     {
         public string Create(string input)
         {
@@ -22,7 +23,7 @@ namespace Kebabify.Api.Services
             for (var index = 0; index < words.Length; index++)
             {
                 logger.LogDebug("Clean: '{Word}'", words[index]);
-                words[index] = RemoveSpecialCharacters(words[index]);
+                words[index] = RemoveSpecialCharactersRegex().Replace(words[index], string.Empty);
             }
 
             //// if no word left
@@ -41,17 +42,7 @@ namespace Kebabify.Api.Services
             return result;
         }
 
-        private static string RemoveSpecialCharacters(string word)
-        {
-            var sb = new StringBuilder();
-            foreach (var c in from c in word
-                              where char.IsLetterOrDigit(c)
-                              select c)
-            {
-                sb.Append(c);
-            }
-
-            return sb.ToString();
-        }
+        [GeneratedRegex("[^a-zA-Z0-9]")]
+        private static partial Regex RemoveSpecialCharactersRegex();
     }
 }
