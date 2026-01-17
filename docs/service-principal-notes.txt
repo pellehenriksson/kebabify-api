@@ -1,0 +1,24 @@
+
+
+## create a service principal for a resource group
+
+az ad sp create-for-rbac --name "GitHub-Actions-SP" --role contributor --scopes /subscriptions/da243df5-7b95-4686-906f-7c5220b33049/resourceGroups/kebabify --sdk-auth
+
+
+## output from command
+
+{
+  "clientId": "",
+  "clientSecret": "",
+  "subscriptionId": "d",
+  "tenantId": "",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+
+
+## add the json as a secret in the repo
