@@ -40,6 +40,9 @@ namespace Kebabify.Test.Services
         [InlineData("   -    ", "")]
         [InlineData("A raised fist was used as a logo by the Industrial Workers of the World[3]", "a-raised-fist-was-used-as-a-logo-by-the-industrial-workers-of-the-world3")]
         [InlineData("djqwi 141 fewf uif23rm99 &/I(e 452675367", "djqwi-141-fewf-uif23rm99-ie-452675367")]
+        [InlineData("  leading and trailing spaces  ", "leading-and-trailing-spaces")]
+        [InlineData("multiple   spaces", "multiple-spaces")]
+        [InlineData("UPPERCASE", "uppercase")]
         public void Create_Valid_Input_Should_Make_Kebab(string input, string expectedResult)
         {
             var service = Testable.Create();

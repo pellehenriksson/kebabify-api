@@ -1,8 +1,13 @@
 {
   "permissions": {
     "allow": [
+<<<<<<< HEAD
       "Bash(git add:*)",
       "Bash(git commit:*)"
+=======
+      "Bash(dotnet test:*)",
+      "Bash(dotnet build:*)"
+>>>>>>> 6d0c28bb777abd416d487cef6ebf4d87721b06d7
     ]
   }
 }

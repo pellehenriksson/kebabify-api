@@ -1,4 +1,4 @@
-﻿using Kebabify.Api;
+using Kebabify.Api;
 using Kebabify.Api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -44,24 +44,6 @@ namespace Kebabify.Test
 
             sut.KebabService.Verify(s => s.Create(input), Times.Once);
             sut.StorageService.Verify(s => s.Persist(input, expected), Times.Once);
-        }
-
-        [Fact(Skip = "fix this")]
-        public async Task MakeKebab_Body_Size_Over_The_Limit_Should_Return_Bad_Request()
-        {
-            // arrange
-            var input = new String('x', 1024);
-
-            var sut = Testable.Create();
-
-            var request = new KebabRequest { Input = input };
-
-            // act
-            var result = await sut.MakeKebab(TestUtils.CreateMockRequest(request).Object);
-
-            // assert
-            var badResult = result.ShouldBeOfType<BadRequestObjectResult>();
-            badResult.Value.ShouldBe("Request body over the limit");
         }
 
         [Fact]

@@ -32,10 +32,7 @@ namespace Kebabify.Api.Services
             await blobClient.UploadAsync(BinaryData.FromString(item.ToJson()), options: options);
         }
 
-        private static string GenereateFilename()
-        {
-            return $"{Guid.NewGuid()}.json";
-        }
+        private static string GenereateFilename() => $"{Guid.NewGuid()}.json";
 
         private sealed record Item(string Input, string Result);
     }

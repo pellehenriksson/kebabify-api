@@ -4,11 +4,7 @@ namespace Kebabify.Api.Common
 {
     public static class KebabifyExtensions
     {
-        private static readonly JsonSerializerOptions options = new()
-        {
-
-            PropertyNameCaseInsensitive = true,
-        };
+        private static readonly JsonSerializerOptions options = new();
 
         public static string ToJson<T>(this T item)
         {

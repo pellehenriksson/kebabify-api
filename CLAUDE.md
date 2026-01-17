@@ -97,6 +97,7 @@ GitHub Actions workflow (`.github/workflows/build.yml`) runs on push/PR to main:
 
 ## Git Workflow Conventions
 
+<<<<<<< HEAD
 **CRITICAL: Claude MUST follow these git practices for ALL work in this repository.**
 
 ### Branch-Based Workflow
@@ -287,6 +288,13 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 5. **Don't push without permission** - wait for user request
 6. **Review before committing** - always check status and diff
 7. **Follow the project's commit style** - check git log first
+=======
+From GEMINI.md - the project follows these conventions:
+1. Always work in a branch, never commit directly to `main`
+2. Review `git log -n 5` to match commit message style
+3. Write commit messages focusing on "why" rather than "what"
+4. Do not push to remote unless explicitly requested
+>>>>>>> 6d0c28bb777abd416d487cef6ebf4d87721b06d7
 
 ## Local Development Setup
 
