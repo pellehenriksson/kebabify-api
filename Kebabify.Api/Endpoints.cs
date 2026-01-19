@@ -23,7 +23,7 @@ namespace Kebabify.Api
         [OpenApiOperation(operationId: "MakeKebab", tags: ["Kebab"], Summary = "Convert string to kebab-case", Description = "Converts an input string to kebab-case format and persists the result to storage.")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(KebabRequest), Required = true, Description = "The input string to convert to kebab-case")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(KebabRespone), Summary = "Successful response", Description = "Returns the original input and the kebab-case result")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(KebabResponse), Summary = "Successful response", Description = "Returns the original input and the kebab-case result")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: "application/json", bodyType: typeof(string), Summary = "Bad request", Description = "Invalid input or validation error")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.InternalServerError, Summary = "Server error", Description = "An unexpected error occurred")]
         public async Task<IActionResult> MakeKebab([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "kebab")] HttpRequestData req)
@@ -55,7 +55,7 @@ namespace Kebabify.Api
                 await storageService.Persist(data.Input, result);
 
                 logger.LogInformation("Returning result");
-                return new OkObjectResult(new KebabRespone(data.Input, result));
+                return new OkObjectResult(new KebabResponse(data.Input, result));
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace Kebabify.Api
         public string Input { get; set; } = string.Empty;
     }
 
-    public record KebabRespone(
+    public record KebabResponse(
         [property: OpenApiProperty(Description = "The original input string")] string Input,
         [property: OpenApiProperty(Description = "The kebab-case result")] string Result);
 }

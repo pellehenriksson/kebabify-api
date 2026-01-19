@@ -37,7 +37,7 @@ namespace Kebabify.Test
 
             // assert
             var okResult = result.ShouldBeOfType<OkObjectResult>();
-            var response = okResult.Value.ShouldBeOfType<KebabRespone>();
+            var response = okResult.Value.ShouldBeOfType<KebabResponse>();
 
             response.Input.ShouldBe(input);
             response.Result.ShouldBe(expected);
